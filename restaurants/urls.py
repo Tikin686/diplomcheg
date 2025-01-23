@@ -1,6 +1,6 @@
 from restaurants.apps import RestaurantsConfig
 from django.urls import path
-from restaurants.views import RestaurantDetailView, RestaurantListView, RestaurantCreateView, RestaurantUpdateView, RestaurantDeleteView, index
+from restaurants.views import RestaurantDetailView, RestaurantListView, RestaurantCreateView, RestaurantUpdateView, RestaurantDeleteView
 
 
 app_name = RestaurantsConfig.name

@@ -1,0 +1,22 @@
+{% extends 'restaurants/base.html' %}
+{% block content %}
+{% load my_tags %}
+<div class="row text-center">
+        <div class="col-3">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ restaurant.name }}</h4>
+                </div>
+                <img src="{{ restaurants.photo | media_filter }}">
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">{{ restaurant.history }}</h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <li>{{ restaurant.description | truncatechars:100 }}</li>
+                    </ul>
+                    <a class="btn btn-primary" href="{% url 'restaurants:restaurant_detail' restaurant.pk %}" role="button">Забронировать</a>
+                    <a class="btn btn-primary" href="{% url 'restaurants:restaurant_list' %}" role="button">Назад</a>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}
