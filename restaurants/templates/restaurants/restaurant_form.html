@@ -1,0 +1,37 @@
+{% extends "restaurants/base.html" %}
+{% block content%}
+<div class="col-12">
+    <form class="row" method="post">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+         <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                    {{ formset.management_form }}
+                    {% for form in formset.forms %}
+                        {{ form.as_p }}
+                        {% if not forloop.last %}
+                            <hr>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
