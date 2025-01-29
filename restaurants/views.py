@@ -1,21 +1,19 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.mail import send_mail
-from config import settings
-from restaurants.forms import RestaurantForm, TableForm, ReserveForm, ReserveUpdateForm
-from restaurants.models import Restaurant, Table, Reserve, ReserveHistory
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, TemplateView
+from django.shortcuts import redirect, get_object_or_404
+from restaurants.forms import RestaurantForm, ReserveForm, ReserveUpdateForm, SuperUserRequiredMixin
+from restaurants.models import Restaurant, Table, Reserve
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.utils import timezone
 from datetime import datetime, timedelta
-from restaurants.templatetags.my_tags import formatting_date, formatting_time
 from django.contrib import messages
-from django.apps import apps
 
 
 class ReserveCancelView(LoginRequiredMixin, View):
+    """
+    Отмена бронирования.
+    """
     def get(self, request, pk):
         reserve = get_object_or_404(Reserve, pk=pk, client=request.user)
         if reserve.is_active:
@@ -28,28 +26,49 @@ class ReserveCancelView(LoginRequiredMixin, View):
 
 
 class RestaurantListView(ListView):
+    """
+    Список ресторанов.
+    """
     model = Restaurant
     template_name = "restaurant_list.html"
 
+    def get_queryset(self):
+        """
+        Возвращает список ресторанов без возможности редактирования.
+        """
+        return Restaurant.objects.all()
+
 
 class RestaurantCreateView(CreateView):
+    """
+    Создание нового ресторана.
+    """
     model = Restaurant
     form_class = RestaurantForm
     success_url = reverse_lazy("restaurant_list")
 
 
 class RestaurantDetailView(DetailView):
+    """
+    Подробная информация о ресторане.
+    """
     model = Restaurant
     template_name = "restaurants/restaurant_detail.html"
 
 
-class RestaurantUpdateView(UpdateView):
+class RestaurantUpdateView(SuperUserRequiredMixin, UpdateView):
+    """
+    Редактирование ресторана.
+    """
     model = Restaurant
     form_class = RestaurantForm
     success_url = reverse_lazy("restaurants:restaurant_list")
 
 
-class RestaurantDeleteView(DeleteView):
+class RestaurantDeleteView(SuperUserRequiredMixin, DeleteView):
+    """
+    Удаление ресторана.
+    """
     model = Restaurant
     template_name = "restaurants/restaurant_confirm_delete.html"
     success_url = reverse_lazy("restaurants:restaurant_list")
@@ -78,12 +97,10 @@ class ReserveCreateView(LoginRequiredMixin, CreateView):
         Проверка доступности стола
         """
 
-        # Проверка, не прошла ли дата бронирования
         if reserve.date_reserved < timezone.now().date():
             messages.error(self.request, "Нельзя бронировать на прошедшую дату.")
             return self.form_invalid(form)
 
-            # Проверка доступности стола
         reserve_datetime = datetime.combine(reserve.date_reserved, reserve.time_reserved)
         start_time = reserve_datetime - timedelta(hours=2)
         end_time = reserve_datetime + timedelta(hours=2)
@@ -129,7 +146,6 @@ class ReserveUpdateView(LoginRequiredMixin, UpdateView):
 
         return super().form_valid(form)
 
-
     def form_invalid(self, form):
         """
         Вывод ошибки формы.
@@ -145,7 +161,7 @@ class ReserveUpdateView(LoginRequiredMixin, UpdateView):
         table = Table.objects.get(pk=self.object.table.pk)
 
         context['table'] = table
-        context['date'] = self.object.date_reserve
+        context['date'] = self.object.date_reserved
         context['is_edit'] = True
 
         return context
@@ -158,3 +174,9 @@ class ReserveListView(LoginRequiredMixin, ListView):
     model = Reserve
     template_name = 'restaurants/reserve_list.html'
     context_object_name = 'reserved'
+
+    def get_queryset(self):
+        """
+        Возвращает только бронирования текущего пользователя.
+        """
+        return Reserve.objects.filter(client=self.request.user)

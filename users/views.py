@@ -1,10 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordResetView
 from django.http import HttpResponseRedirect
-
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
-
-
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -12,7 +9,6 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.html import strip_tags
 from django.utils.http import urlsafe_base64_encode
-
 from config.settings import EMAIL_HOST_USER
 from users.forms import UserRegisterForm, UserManagerForm
 from users.models import User
@@ -25,6 +21,9 @@ class UserListView(ListView):
 
 
 class UserCreateView(CreateView):
+    """
+    Регистрация нового пользователя.
+    """
     model = User
     form_class = UserRegisterForm
     success_url = reverse_lazy("users:login")
@@ -55,6 +54,9 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     
     
 class UserDetailView(LoginRequiredMixin, DetailView):
+    """
+    Показывает детальную информацию о пользователе.
+    """
     model = User
     template_name = 'users/user_detail.html'
     context_object_name = 'user'

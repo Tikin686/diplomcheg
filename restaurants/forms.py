@@ -1,10 +1,15 @@
 from django import forms
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from restaurants.models import Restaurant, Reserve
 from django.utils import timezone
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
 class RestaurantForm(forms.ModelForm):
+    """
+    Форма ресторана.
+    """
     class Meta:
         model = Restaurant
         exclude = ("free_seats", )
@@ -39,17 +44,6 @@ class TableForm(StyleFormMixin, forms.ModelForm):
                }),
     )
 
-    #def __init__(self, *args, **kwargs):
-        #super(TableForm, self).__init__(*args, **kwargs)
-
-        #times = [
-            #(datetime.strptime(f'{hour:02d}:{minute:02d}', '%H:%M').time(), f'{hour:02d}:{minute:02d}')
-            #for hour in range(self.open_time, self.close_reserve_time + 1) for minute in [0, self.time_step]
-            #if hour < self.close_reserve_time or (hour == self.close_reserve_time and minute == 0)
-        #]
-
-        #self.fields['time_reserved'].choices = times
-
     class Meta:
         model = Reserve
         fields = ['date_reserved']
@@ -81,35 +75,16 @@ class ReserveUpdateForm(StyleFormMixin, forms.ModelForm):
         instance = kwargs.get('instance')
 
         if instance:
-            self.initial['date_reserve'] = instance.date_reserve
-
-
-        all_times = [
-            (datetime.strptime(f'{hour:02d}:{minute:02d}', '%H:%M').time(), f'{hour:02d}:{minute:02d}')
-            for hour in range(self.open_time, self.close_reserve_time + 1) for minute in [0, self.time_step]
-            if hour < self.close_reserve_time or (hour == self.close_reserve_time and minute == 0)
-        ]
-
-        """
-        Получаем занятые времена и даты на стол
-        """
-        reserve_times = self.get_reserve_times(instance.table, self.initial.get('date_reserve', self.next_day))
-
-        """
-        Фильтр временного списка(Оставляем свободное)
-        """
-        available_times = [(t, s) for t, s in all_times if (t, s) not in reserve_times]
-
-
-    #@staticmethod
-    #def get_reserve_times(table, date):
-        #"""
-        #Возвращает список занятого времени и даты для определенного стола.
-        #Реализовываем запрос к БД.
-        #"""
-        #reserve_slots = Reserve.objects.filter(table=table, date_reserved=date).values_list('time_reserved', flat=True)
-        #return [(datetime.strptime(str(slot), '%H:%M:%S').time(), str(slot)[:5]) for slot in reserve_slots]
+            self.initial['date_reserved'] = instance.date_reserved
 
     class Meta:
         model = Reserve
-        fields = '__all__'
+        exclude = ('is_active', 'client')
+
+
+class SuperUserRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        raise PermissionDenied("У вас нет разрешения на выполнение этого действия.")
