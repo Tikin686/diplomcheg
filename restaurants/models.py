@@ -18,9 +18,6 @@ class Restaurant(models.Model):
     mission = models.TextField(verbose_name='Миссия ресторана', **NULLABLE)
     command = models.TextField(verbose_name='Команда', **NULLABLE)
     services = models.TextField(verbose_name='Предоставляемые услуги')
-    #total_seats = models.PositiveIntegerField(verbose_name='Общее количество мест')
-    #free_seats = models.PositiveIntegerField(verbose_name='Количество свободных мест')
-    #reserved_seats = models.PositiveIntegerField(verbose_name='Количество занятых мест', **NULLABLE)
     photo = models.ImageField(upload_to='restaurant/photo', **NULLABLE, verbose_name='Фото', help_text='Загрузите фото ресторана')
 
     def __str__(self):
@@ -45,7 +42,6 @@ class Table(models.Model):
     class Meta:
         verbose_name = 'Стол'
         verbose_name_plural = 'Столы'
-
 
 
 class Reserve(models.Model):

@@ -18,6 +18,7 @@
                     <p><strong>Стол:</strong> {{ reserve.table }}</p>
                     <p><strong>Ресторан:</strong> {{ reserve.table.restaurant }}</p>
                     {% if reserve.is_active %}
+                    <a class="btn btn-danger" href="{% url 'restaurants:reserve_update' reserve.id %}">Изменить бронирование</a>
                     <a class="btn btn-danger" href="{% url 'restaurants:reserve_cancel' reserve.id %}">Отменить бронирование</a>
                     {% endif %}
                 </div>
