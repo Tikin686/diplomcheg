@@ -1,0 +1,34 @@
+{% extends 'restaurants/base.html' %}
+{% load my_tags %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Список бронирований</h2>
+    <div class="row">
+        {% for reserve in object_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Бронирование #{{ reserve.id }}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Дата:</strong> {{ reserve.date_reserved|date:"d.m.Y" }}</p>
+                    <p><strong>Время:</strong> {{ reserve.time_reserved|time:"H:i" }}</p>
+                    <p><strong>Статус:</strong> {% if reserve.is_active %}Активно{% else %}Отменено{% endif %}</p>
+                    <p><strong>Стол:</strong> {{ reserve.table }}</p>
+                    <p><strong>Ресторан:</strong> {{ reserve.table.restaurant }}</p>
+                    {% if reserve.is_active %}
+                    <a class="btn btn-danger" href="{% url 'restaurants:reserve_cancel' reserve.id %}">Отменить бронирование</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>У вас пока нет бронирований.</p>
+        </div>
+        {% endfor %}
+    </div>
+    <a class="btn btn-primary mt-3" href="{% url 'restaurants:restaurant_list' %}">Назад к списку ресторанов</a>
+</div>
+{% endblock %}

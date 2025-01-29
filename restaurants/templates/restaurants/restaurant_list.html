@@ -2,26 +2,24 @@
 {% load my_tags %}
 {% block content %}
 <div class="row text-center">
-        {% for restaurant in object_list %}
-        <div class="col-3">
-            <div class="card mb-4 box-shadow">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">{{ restaurant.name }}</h4>
-                </div>
-                <img src="{{ restaurants.photo | media_filter }}">
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">{{ restaurant.phone }}</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>{{ restaurant.description | truncatechars:100 }}</li>
-                    </ul>
-                    <p class="card-body">
-                    </p>
-                    <a class="btn btn-primary" href="{% url 'restaurants:restaurant_detail' restaurant.pk %}" role="button">Посмотреть</a>
-                    <a class="btn btn-primary" href="{% url 'restaurants:restaurant_update' restaurant.pk %}" role="button">Редактировать</a>
-                    <a class="btn btn-primary" href="{% url 'restaurants:restaurant_delete' restaurant.pk %}" role="button">Удалить</a>
+    {% for restaurant in object_list %}
+    <div class="col-3">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">{{ restaurant.name }}</h4>
+            </div>
+            <img src="{{ restaurant.photo|media_filter }}" class="card-img-top" alt="{{ restaurant.name }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ restaurant.phone }}</h5>
+                <p class="card-text">{{ restaurant.description|truncatechars:100 }}</p>
+                <div class="btn-group" role="group" aria-label="Restaurant actions">
+                    <a class="btn btn-primary" href="{% url 'restaurants:restaurant_detail' restaurant.pk %}">Посмотреть</a>
+                    <a class="btn btn-secondary" href="{% url 'restaurants:restaurant_update' restaurant.pk %}">Редактировать</a>
+                    <a class="btn btn-danger" href="{% url 'restaurants:restaurant_delete' restaurant.pk %}">Удалить</a>
                 </div>
             </div>
         </div>
-        {% endfor %}
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}

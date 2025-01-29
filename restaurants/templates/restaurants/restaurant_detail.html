@@ -13,7 +13,7 @@
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                         <li>{{ restaurant.description | truncatechars:100 }}</li>
                     </ul>
-                    <a class="btn btn-primary" href="{% url 'restaurants:restaurant_detail' restaurant.pk %}" role="button">Забронировать</a>
+                    <a class="btn btn-success mt-2" href="{% url 'restaurants:reserve_create' restaurant.pk %}">Забронировать стол</a>
                     <a class="btn btn-primary" href="{% url 'restaurants:restaurant_list' %}" role="button">Назад</a>
                 </div>
             </div>
