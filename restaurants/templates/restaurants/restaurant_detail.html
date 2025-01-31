@@ -2,17 +2,16 @@
 {% block content %}
 {% load my_tags %}
 <div class="row text-center">
-        <div class="col-3">
-            <div class="card mb-4 box-shadow">
-                <div class="card-header">
+    <div class="col-0">
                     <h4 class="my-0 font-weight-normal">{{ restaurant.name }}</h4>
-                </div>
-                <img src="{{ restaurants.photo | media_filter }}">
+            <img src="{{ restaurant.photo|media_filter }}" class="card-img-top" alt="{{ restaurant.name }}">
                 <div class="card-body">
-                    <h1 class="card-title pricing-card-title">{{ restaurant.history }}</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>{{ restaurant.description | truncatechars:100 }}</li>
-                    </ul>
+                    <h5 class="card-title pricing-card-title">История ресторана</h5>
+                    <p class="card-title pricing-card-title">{{ restaurant.history }}</p>
+                    <h5 class="card-title pricing-card-title">Миссия ресторана</h5>
+                    <p class="card-title pricing-card-title">{{ restaurant.mission }}</p>
+                    <h5 class="card-title pricing-card-title">Команда ресторана</h5>
+                    <p class="card-title pricing-card-title">{{ restaurant.command }}</p>
                     {% if user.is_authenticated %}
                         <a class="btn btn-primary" href="{% url 'restaurants:reserve_create' restaurant.id %}">Забронировать столик</a>
                     {% else %}
@@ -20,7 +19,6 @@
 {% endif %}
                     <a class="btn btn-primary" href="{% url 'restaurants:restaurant_list' %}" role="button">Назад</a>
                 </div>
-            </div>
         </div>
 </div>
 {% endblock %}

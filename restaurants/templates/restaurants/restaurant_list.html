@@ -10,10 +10,16 @@
             </div>
             <img src="{{ restaurant.photo|media_filter }}" class="card-img-top" alt="{{ restaurant.name }}">
             <div class="card-body">
-                <h5 class="card-title">{{ restaurant.phone }}</h5>
+                <h5 class="card-text">Контактная информация</h5>
+                <p class="card-text">{{ restaurant.phone_number }}</p>
+                <p class="card-text">{{ restaurant.address }}</p>
+                <h5 class="card-text">Описание ресторана</h5>
                 <p class="card-text">{{ restaurant.description|truncatechars:100 }}</p>
+                <h5 class="card-text">Предоставляемые услуги</h5>
+                <p class="card-text">{{ restaurant.services|truncatechars:100 }}</p>
                 <div class="btn-group" role="group" aria-label="Restaurant actions">
                     <a class="btn btn-primary" href="{% url 'restaurants:restaurant_detail' restaurant.pk %}">Посмотреть</a>
+                    <a class="btn btn-primary" href="{% url 'restaurants:feedback' restaurant.pk %}">Обратная связь</a>
                     {% if can_edit %}
                     <a class="btn btn-secondary" href="{% url 'restaurants:restaurant_update' restaurant.pk %}">Редактировать</a>
                     <a class="btn btn-danger" href="{% url 'restaurants:restaurant_delete' restaurant.pk %}">Удалить</a>
