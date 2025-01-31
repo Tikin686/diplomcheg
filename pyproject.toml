@@ -16,6 +16,7 @@ psycopg2-binary = "^2.9.10"
 ipython = "^8.31.0"
 django-phonenumber-field = "^8.0.0"
 phonenumbers = "^8.13.53"
+flake8 = "^7.1.1"
 
 
 [build-system]
